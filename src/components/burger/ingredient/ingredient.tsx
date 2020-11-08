@@ -1,13 +1,6 @@
 import React, { Fragment } from "react";
+import { IngredientType } from "../../../data/ingredient_hub";
 import classes from './ingredient.module.css';
-export enum IngredientType {
-    breadTop = "breadTop",
-    breadBottom = "breadBottom",
-    meat = "meat",
-    cheese = "cheese",
-    salad = "salad",
-    bacon = "bacon",
-}
 interface Props {
     type: IngredientType
 }
