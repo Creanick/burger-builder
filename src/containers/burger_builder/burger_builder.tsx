@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import Burger from '../../components/burger/burger';
+import Ingredient from '../../components/burger/ingredient/ingredient';
+import OrderSummery from '../../components/burger/ingredient/order_summery/order_summery';
 import PriceViewer from '../../components/burger/price_viewer/price_viewer';
 import BurgerControls from '../../components/burger_controls/burger_controls';
+import Button from '../../components/button/button';
 import Center from '../../components/center/center';
-import OrderButton from '../../components/order_button/order_button';
+import Modal from '../../components/modal/modal';
 import ingredientHub, { IngredientType } from '../../data/ingredient_hub';
 
 interface State{
@@ -18,13 +21,17 @@ class BurgerBuilder extends Component<{},State> {
     render() {
         return (
             <div>
+                <Modal>
+                    <OrderSummery ingredients={this.state.ingredients}
+                    totalPrice={this.state.totalPrice}/>
+                </Modal>
                 <Burger
                 onIngredientClick={this.ingredientRemoveHandler}
                 ingredients={this.state.ingredients}/>
                 <BurgerControls onAddIngredient={this.ingredientAddingHandler}/>
                 <PriceViewer price={this.state.totalPrice}/>
                 <Center>
-                    <OrderButton disabled={this.state.ingredients.length <= 0}>Order Now</OrderButton>
+                    <Button color="orange" disabled={this.state.ingredients.length <= 0}>Order Now</Button>
                 </Center>
             </div>
         );

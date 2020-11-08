@@ -30,7 +30,7 @@ const OrderSummery:React.FunctionComponent<Props> = ({ingredients,totalPrice})=>
         <Wrapper>
             <h4 style={{textAlign:"center"}}>Your Burger Order Summery</h4>
             {items}
-            <Container><p>Total Price</p><p>${totalPrice}</p></Container>
+            <Container><p>Total Price</p><p>${totalPrice.toFixed(2)}</p></Container>
             <Center><Button color="orange">Proceed To Checkout</Button></Center>
         </Wrapper>
     );
