@@ -16,7 +16,9 @@ class BurgerBuilder extends Component<{},State> {
     render() {
         return (
             <div>
-                <Burger ingredients={this.state.ingredients}/>
+                <Burger
+                onIngredientClick={this.ingredientRemoveHandler}
+                ingredients={this.state.ingredients}/>
                 <BurgerControls onAddIngredient={this.ingredientAddingHandler}/>
             </div>
         );
@@ -25,6 +27,15 @@ class BurgerBuilder extends Component<{},State> {
         this.setState((state)=>{
             return {ingredients:[...state.ingredients,type]}
         });
+    }
+    ingredientRemoveHandler = (index:number)=>{
+        if(index >= 0 && index < this.state.ingredients.length){
+            this.setState(state=>{
+                const ingredients = [...state.ingredients];
+                ingredients.splice(index,1);
+                return {ingredients: ingredients};
+            })
+        }
     }
 }
 
