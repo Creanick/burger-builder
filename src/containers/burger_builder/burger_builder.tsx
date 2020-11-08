@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Burger from '../../components/burger/burger';
-import Ingredient from '../../components/burger/ingredient/ingredient';
 import OrderSummery from '../../components/burger/ingredient/order_summery/order_summery';
 import PriceViewer from '../../components/burger/price_viewer/price_viewer';
 import BurgerControls from '../../components/burger_controls/burger_controls';
@@ -11,17 +10,19 @@ import ingredientHub, { IngredientType } from '../../data/ingredient_hub';
 
 interface State{
     ingredients: IngredientType[],
-    totalPrice: number
+    totalPrice: number,
+    ordering: boolean
 }
 class BurgerBuilder extends Component<{},State> {
     state = {
         ingredients:[],
-        totalPrice: 0
+        totalPrice: 0,
+        ordering: false
     }
     render() {
         return (
             <div>
-                <Modal>
+                <Modal show={this.state.ordering}>
                     <OrderSummery ingredients={this.state.ingredients}
                     totalPrice={this.state.totalPrice}/>
                 </Modal>
@@ -31,11 +32,13 @@ class BurgerBuilder extends Component<{},State> {
                 <BurgerControls onAddIngredient={this.ingredientAddingHandler}/>
                 <PriceViewer price={this.state.totalPrice}/>
                 <Center>
-                    <Button color="orange" disabled={this.state.ingredients.length <= 0}>Order Now</Button>
+                    <Button onClick={this.orderingHandler} color="orange" disabled={this.state.ingredients.length <= 0}>Order Now</Button>
                 </Center>
             </div>
         );
     }
+
+    orderingHandler = ()=>this.setState({ordering: true});
     ingredientAddingHandler = (type:IngredientType)=>{
         this.setState((state)=>{
             const price = ingredientHub[type].price;
