@@ -4,7 +4,7 @@ export enum IngredientType {
     breadTop = "breadTop",
     breadBottom = "breadBottom",
     meat = "meat",
-    cheese = "chesse",
+    cheese = "cheese",
     salad = "salad",
     bacon = "bacon",
 }
