@@ -3,16 +3,20 @@ import styled from 'styled-components';
 import { IngredientType } from '../../data/ingredient_hub';
 import Ingredient from './ingredient/ingredient';
 interface Props{
-    ingredients: IngredientType[]
+    ingredients: IngredientType[],
+    onIngredientClick?: (index:number)=>void
 }
-const Burger:React.FunctionComponent<Props> = (props)=>{
-    const ingredientsElements = props.ingredients.map((type,index)=>{
-        return <Ingredient key={type+index} type={type}/>
+const Burger:React.FunctionComponent<Props> = ({ingredients,onIngredientClick})=>{
+    const ingredientsElements = ingredients.map((type,index)=>{
+        return <Ingredient
+        onClick={()=>onIngredientClick && onIngredientClick(index)}
+        key={type+index} 
+        type={type}/>
     });
     return (
         <Container>
             <Ingredient type={IngredientType.breadTop}/>
-            {props.ingredients.length === 0?<p>
+            {ingredients.length === 0?<p>
                 Place Add Some Ingredients
             </p>: ingredientsElements}
             <Ingredient type={IngredientType.breadBottom}/>
