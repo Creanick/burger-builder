@@ -2,15 +2,16 @@ import React from 'react';
 import styled from 'styled-components';
 import BackDrop from '../backdrop/backdrop';
 
-const Modal:React.FunctionComponent<{}> = (props)=>{
+const Modal:React.FunctionComponent<{show?:boolean}> = ({show = true,children})=>{
     return (
-        <Wrapper>
+        <Wrapper show={show}>
             <BackDrop/>
-            <Container>{props.children}</Container>
+            <Container>{children}</Container>
         </Wrapper>
     );
 }
-const Wrapper = styled.div`
+const Wrapper = styled.div<{show:boolean}>`
+    visibility: ${props=>props.show ? "visible":"hidden"};
     z-index: 100;
     position: fixed;
     left: 0;
