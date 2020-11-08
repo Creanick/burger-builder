@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Burger from '../../components/burger/burger';
+import PriceViewer from '../../components/burger/price_viewer/price_viewer';
 import BurgerControls from '../../components/burger_controls/burger_controls';
 import ingredientHub, { IngredientType } from '../../data/ingredient_hub';
 
@@ -19,7 +20,7 @@ class BurgerBuilder extends Component<{},State> {
                 onIngredientClick={this.ingredientRemoveHandler}
                 ingredients={this.state.ingredients}/>
                 <BurgerControls onAddIngredient={this.ingredientAddingHandler}/>
-                <p>Total Price : {this.state.totalPrice.toFixed(2)}</p>
+                <PriceViewer price={this.state.totalPrice}/>
             </div>
         );
     }
