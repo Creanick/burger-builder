@@ -1,21 +1,30 @@
 import React, { Component } from 'react';
-import Ingredient, { IngredientType } from '../../components/burger/ingredient/ingredient';
+import Burger from '../../components/burger/burger';
+import BurgerControls from '../../components/burger_controls/burger_controls';
+import { IngredientType } from '../../data/ingredient_hub';
 
-
-class BurgerBuilder extends Component {
+interface State{
+    ingredients: IngredientType[]
+}
+class BurgerBuilder extends Component<{},State> {
+    state = {
+        ingredients:[
+            IngredientType.bacon,
+            IngredientType.cheese,
+        ]
+    }
     render() {
         return (
-            <div style={{ height: "200px", width: "60%" }}>
-                <div>Burger</div>
-                <Ingredient type={IngredientType.breadTop} />
-                <Ingredient type={IngredientType.meat} />
-                <Ingredient type={IngredientType.salad} />
-                <Ingredient type={IngredientType.bacon} />
-                <Ingredient type={IngredientType.cheese} />
-                <Ingredient type={IngredientType.breadBottom} />
-                <div>Build Controls</div>
+            <div>
+                <Burger ingredients={this.state.ingredients}/>
+                <BurgerControls onAddIngredient={this.ingredientAddingHandler}/>
             </div>
         );
+    }
+    ingredientAddingHandler = (type:IngredientType)=>{
+        this.setState((state)=>{
+            return {ingredients:[...state.ingredients,type]}
+        });
     }
 }
 
