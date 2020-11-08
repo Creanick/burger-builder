@@ -16,6 +16,7 @@ const OrderButton = styled.button`
     }
     &:disabled{
         background-color: #fad693;
+        cursor: not-allowed;
     }
 `;
 
