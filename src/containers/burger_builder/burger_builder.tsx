@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import Burger from '../../components/burger/burger';
 import PriceViewer from '../../components/burger/price_viewer/price_viewer';
 import BurgerControls from '../../components/burger_controls/burger_controls';
+import Center from '../../components/center/center';
+import OrderButton from '../../components/order_button/order_button';
 import ingredientHub, { IngredientType } from '../../data/ingredient_hub';
 
 interface State{
@@ -21,6 +23,9 @@ class BurgerBuilder extends Component<{},State> {
                 ingredients={this.state.ingredients}/>
                 <BurgerControls onAddIngredient={this.ingredientAddingHandler}/>
                 <PriceViewer price={this.state.totalPrice}/>
+                <Center>
+                    <OrderButton disabled={this.state.ingredients.length <= 0}>Order Now</OrderButton>
+                </Center>
             </div>
         );
     }
