@@ -6,7 +6,6 @@ const Button = styled.button`
     border-radius: 4px;
     color: white;
     background-color: ${props=>props.color || 'grey'};
-    margin: auto;
     outline: none;
     &:hover{
         cursor: pointer;
