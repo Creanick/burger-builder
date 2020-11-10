@@ -13,6 +13,16 @@ const Modal:React.FunctionComponent<Props> = ({show = true,children,onBackClick}
         </Wrapper>
     );
 }
+const Container = styled.div`
+    padding: 20px 20px;
+    background: white;
+    border-radius: 4px;
+    position: absolute;
+    width: 70%;
+    @media (min-width: 600px){
+        width: 500px;
+    }
+`;
 const Wrapper = styled.div<{show:boolean}>`
     visibility: ${props=>props.show ? "visible":"hidden"};
     z-index: 100;
@@ -24,15 +34,8 @@ const Wrapper = styled.div<{show:boolean}>`
     display: flex;
     justify-content: center;
     align-items: center;
-`;
-const Container = styled.div`
-    padding: 20px 20px;
-    background: white;
-    border-radius: 4px;
-    position: absolute;
-    width: 70%;
-    @media (min-width: 600px){
-        width: 500px;
+    ${Container}{
+        opacity: ${props=>props.show ? 1:0};
     }
 `;
 
