@@ -1,11 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import BackDrop from '../backdrop/backdrop';
-
-const Modal:React.FunctionComponent<{show?:boolean}> = ({show = true,children})=>{
+interface Props{
+    show: boolean,
+    onBackClick?:()=>void
+}
+const Modal:React.FunctionComponent<Props> = ({show = true,children,onBackClick})=>{
     return (
         <Wrapper show={show}>
-            <BackDrop/>
+            <BackDrop onClick={onBackClick}/>
             <Container>{children}</Container>
         </Wrapper>
     );
