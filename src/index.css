@@ -10,7 +10,12 @@ body {
 *{
   box-sizing: border-box;
 }
-
+button{
+  outline: none;
+}
+button:hover{
+  cursor: pointer;
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
