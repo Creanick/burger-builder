@@ -23,7 +23,9 @@ class BurgerBuilder extends Component<{},State> {
         return (
             <div>
                 <Modal show={this.state.ordering} onBackClick={this.checkoutCancelHandler}>
-                    <OrderSummery ingredients={this.state.ingredients}
+                    <OrderSummery 
+                    onCheckoutCancel={this.checkoutCancelHandler}
+                    ingredients={this.state.ingredients}
                     totalPrice={this.state.totalPrice}/>
                 </Modal>
                 <Burger
