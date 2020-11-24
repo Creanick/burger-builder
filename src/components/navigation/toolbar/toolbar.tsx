@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Logo from '../../logo/logo';
+import Nav from './nav/nav';
 const Container = styled.div`
     height: 56px;
     background-color: brown;
@@ -25,7 +26,7 @@ const Toolbar:React.FunctionComponent<{}> = (props)=>{
             <Padding>
                 <Logo/>
             </Padding>
-            <nav>Nav</nav>
+            <Nav/>
         </Container>
     );
 }
