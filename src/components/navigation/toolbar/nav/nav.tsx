@@ -5,9 +5,13 @@ const Wrapper = styled.ul`
     margin: 0;
     padding: 0;
     list-style: none;
-    height:100%;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    @media (min-width: 500px){
+        height: 100%;
+        flex-direction: row;
+        align-items: center;
+    }
 `;
 const Nav:React.FunctionComponent = (props)=>(
     <nav style={{height:"100%"}}>

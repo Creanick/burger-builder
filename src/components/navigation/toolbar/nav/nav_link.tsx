@@ -1,23 +1,35 @@
 import React from 'react';
 import styled from 'styled-components';
 const Wrapper = styled.li`
-    margin: 0;
-    height: 100%;
-    display: flex;
-    align-items: center;
+    padding: 10px;
     a{
         text-decoration: none;
-        color: white;
-        border-bottom: 4px solid transparent;
-        height:100%;
-        display: flex;
-        align-items: center;
-        padding: 0px 12px;
+        color: black;
     }
     a:hover,a:active,a.active{
-        background-color: #8f5c2c;
+        color: #40a4c8;
         border-bottom: 4px solid #40a4c8;
-        color: white;
+    }
+    @media (min-width: 500px){
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        a{
+            text-decoration: none;
+            color: white;
+            border-bottom: 4px solid transparent;
+            height:100%;
+            display: flex;
+            align-items: center;
+            padding: 0px 12px;
+        }
+        a:hover,a:active,a.active{
+            background-color: #8f5c2c;
+            border-bottom: 4px solid #40a4c8;
+            color: white;
+        }
     }
 `;
 interface Props{
