@@ -16,6 +16,10 @@ const Wrapper = styled.div<SideDrawerProps>`
     background-color: white;
     z-index: 200;
     padding: 16px;
+
+    @media (min-width: 500px){
+        display: none;
+    }
 `;
 const SideDrawer:React.FunctionComponent = (props)=>(
     <Wrapper>
