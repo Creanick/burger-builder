@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import styled from 'styled-components';
+import BackDrop from '../backdrop/backdrop';
 import Logo from '../logo/logo';
 import Nav from '../navigation/toolbar/nav/nav';
 
@@ -22,13 +23,16 @@ const Wrapper = styled.div<SideDrawerProps>`
     }
 `;
 const SideDrawer:React.FunctionComponent = (props)=>(
-    <Wrapper>
-        <div style={{height: "6%"}}>
-        <Logo/>
-        </div>
-        <br/>
-        <Nav/>
-    </Wrapper>
+    <Fragment>
+        <BackDrop show onClick={()=>console.log("clicked drop")}/>
+        <Wrapper>
+            <div style={{height: "6%"}}>
+            <Logo/>
+            </div>
+            <br/>
+            <Nav/>
+        </Wrapper>
+    </Fragment>
 );
 
 export default SideDrawer;
