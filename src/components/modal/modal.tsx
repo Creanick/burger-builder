@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import styled from 'styled-components';
-import BackDrop from '../backdrop/backdrop';
 interface Props{
     show: boolean,
     onBackClick?:()=>void
 }
 const Modal:React.FunctionComponent<Props> = ({show = true,children,onBackClick})=>{
     return (
+        <Fragment>
         <Wrapper show={show}>
-            <BackDrop onClick={onBackClick}/>
+        <BackDrop onClick={onBackClick}/>
             <Container>{children}</Container>
         </Wrapper>
+        </Fragment>
     );
 }
 const Container = styled.div`
@@ -37,6 +38,12 @@ const Wrapper = styled.div<{show:boolean}>`
     ${Container}{
         opacity: ${props=>props.show ? 1:0};
     }
+`;
+const BackDrop = styled.div`
+    width: 100%;
+    height: 100%;
+    background: black;
+    opacity: 0.5;
 `;
 
 export default Modal;
