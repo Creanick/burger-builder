@@ -1,18 +1,25 @@
-import React, { Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import styled from 'styled-components';
 interface Props{
     show: boolean,
     onBackClick?:()=>void
 }
-const Modal:React.FunctionComponent<Props> = ({show = true,children,onBackClick})=>{
-    return (
-        <Fragment>
+
+class Modal extends Component<Props>{
+    shouldComponentUpdate(nextProps:Props,){
+        return nextProps.show !== this.props.show;
+    }
+    render(){
+        const {show=true,children,onBackClick} = this.props;
+        return (
+            <Fragment>
         <Wrapper show={show}>
         <BackDrop onClick={onBackClick}/>
             <Container>{children}</Container>
         </Wrapper>
         </Fragment>
-    );
+        );
+    }
 }
 const Container = styled.div`
     padding: 20px 20px;
