@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Logo from '../../logo/logo';
 import Nav from './nav/nav';
+import {BiMenuAltLeft} from 'react-icons/bi';
 const Container = styled.div`
     height: 56px;
     background-color: brown;
@@ -22,6 +23,9 @@ const Hider = styled.div`
     }
 `;
 const Menu = styled.div`
+    &:hover{
+        cursor: pointer;
+    }
     @media (min-width: 500px){
         display: none;
     }
@@ -36,7 +40,9 @@ interface Props{
 const Toolbar:React.FunctionComponent<Props> = ({onMenuClick})=>{
     return (
         <Container>
-            <Menu onClick={onMenuClick}>Menu</Menu>
+            <Menu onClick={onMenuClick}>
+                <BiMenuAltLeft size="30"/>
+            </Menu>
             <Padding>
                 <Logo/>
             </Padding>
