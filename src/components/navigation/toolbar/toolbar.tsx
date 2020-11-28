@@ -21,14 +21,22 @@ const Hider = styled.div`
         display: none;
     }
 `;
+const Menu = styled.div`
+    @media (min-width: 500px){
+        display: none;
+    }
+`;
 const Padding = styled.div`
     height: 100%;
     padding: 6px;
 `;
-const Toolbar:React.FunctionComponent<{}> = (props)=>{
+interface Props{
+    onMenuClick?:()=>void
+}
+const Toolbar:React.FunctionComponent<Props> = ({onMenuClick})=>{
     return (
         <Container>
-            <div>Menu</div>
+            <Menu onClick={onMenuClick}>Menu</Menu>
             <Padding>
                 <Logo/>
             </Padding>
