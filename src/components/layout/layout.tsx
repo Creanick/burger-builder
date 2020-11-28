@@ -13,16 +13,18 @@ class Layout extends Component<Props,State>{
     }
     render(){
         return <Fragment>
-        <Toolbar onMenuClick={this.menuToggleHandler}/>
-        <SideDrawer show={this.state.showMenu} onBackClick={this.menuToggleHandler}/>
+        <Toolbar onMenuClick={this.menuOpenHandler}/>
+        <SideDrawer show={this.state.showMenu} onBackClick={this.menuCloseHandler}/>
         <main className={classes.mainContent}>
             {this.props.children}
         </main>
     </Fragment>;
     }
-
-    menuToggleHandler = ()=>{
-        this.setState(state=>({showMenu:!state.showMenu}));
+    menuCloseHandler = ()=>{
+        this.setState({showMenu: false});
+    }
+    menuOpenHandler = ()=>{
+        this.setState({showMenu: true});
     }
 }
 
