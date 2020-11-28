@@ -15,6 +15,12 @@ const Container = styled.div`
     top: 0;
     z-index: 90;
 `;
+const Hider = styled.div`
+    height: 100%;
+    @media (max-width: 499px){
+        display: none;
+    }
+`;
 const Padding = styled.div`
     height: 100%;
     padding: 6px;
@@ -26,7 +32,9 @@ const Toolbar:React.FunctionComponent<{}> = (props)=>{
             <Padding>
                 <Logo/>
             </Padding>
-            <Nav/>
+            <Hider>
+                <Nav/>
+            </Hider>
         </Container>
     );
 }
