@@ -4,6 +4,7 @@ import ingredientHub, { IngredientType } from '../../../../data/ingredient_hub';
 import Button from '../../../button/button';
 import FlatButton from '../../../button/flat_button';
 import Center from '../../../center/center';
+import Spinner from '../../../spinner/spinner';
 function getIngredientQuantity(ingredients:IngredientType[]):{[index:string]:number}{
     const map:{[index:string]:number} = {};
     ingredients.forEach(type=>{
@@ -14,10 +15,11 @@ function getIngredientQuantity(ingredients:IngredientType[]):{[index:string]:num
 interface Props{
     ingredients: IngredientType[],
     totalPrice: number,
+    checkoutLoading?:boolean,
     onCheckout?: ()=>void,
     onCheckoutCancel?: ()=>void   
 }
-const OrderSummery:React.FunctionComponent<Props> = ({ingredients,totalPrice,onCheckout,onCheckoutCancel})=>{
+const OrderSummery:React.FunctionComponent<Props> = ({ingredients,checkoutLoading=false,totalPrice,onCheckout,onCheckoutCancel})=>{
     const quantities:{[index:string] : number} = getIngredientQuantity(ingredients);
     const items: JSX.Element[] = [];
     for (const key in ingredientHub) {
@@ -34,7 +36,9 @@ const OrderSummery:React.FunctionComponent<Props> = ({ingredients,totalPrice,onC
             <h4 style={{textAlign:"center"}}>Your Burger Order Summery</h4>
             {items}
             <Container><p>Total Price</p><p>${totalPrice.toFixed(2)}</p></Container>
-            <Center><Button onClick={onCheckout} color="orange">Proceed To Checkout</Button></Center>
+            <Center><Button onClick={onCheckout} color="orange">
+                    {checkoutLoading ? <Spinner/>: "Proceed To Checkout"}
+                </Button></Center>
             <br/>
             <Center><FlatButton onClick={onCheckoutCancel} color="red">Cancel</FlatButton></Center>
         </Wrapper>

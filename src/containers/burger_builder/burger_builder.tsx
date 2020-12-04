@@ -12,19 +12,22 @@ import axios from '../../axios_order';
 interface State{
     ingredients: IngredientType[],
     totalPrice: number,
-    ordering: boolean
+    ordering: boolean,
+    purchasing: boolean
 }
 class BurgerBuilder extends Component<{},State> {
-    state = {
+    state:State = {
         ingredients:[],
         totalPrice: 0,
-        ordering: false
+        ordering: false,
+        purchasing: false
     }
     render() {
         return (
             <div>
                 <Modal show={this.state.ordering} onBackClick={this.checkoutCancelHandler}>
                     <OrderSummery 
+                    checkoutLoading={this.state.purchasing}
                     onCheckout={this.checkoutHandler}
                     onCheckoutCancel={this.checkoutCancelHandler}
                     ingredients={this.state.ingredients}
@@ -43,6 +46,7 @@ class BurgerBuilder extends Component<{},State> {
     }
 
     checkoutHandler = ()=>{
+        this.setState({purchasing: true});
         const data = {
             ingredients: this.state.ingredients,
             totalPrice: this.state.totalPrice,
@@ -59,8 +63,12 @@ class BurgerBuilder extends Component<{},State> {
         }
         axios.post("/orders.json",data)
         .then(response=>{
-            console.log(response);
-        });
+            this.setState({purchasing: false,ordering:false});
+        })
+        .catch(error=>{
+            console.log(error);
+            this.setState({purchasing: false,ordering:false});
+        })
     }
 
     checkoutCancelHandler = ()=>this.setState({ordering: false});
