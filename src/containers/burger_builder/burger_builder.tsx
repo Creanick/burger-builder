@@ -7,6 +7,7 @@ import Button from '../../components/button/button';
 import Center from '../../components/center/center';
 import Modal from '../../components/modal/modal';
 import ingredientHub, { IngredientType } from '../../data/ingredient_hub';
+import axios from '../../axios_order';
 
 interface State{
     ingredients: IngredientType[],
@@ -24,6 +25,7 @@ class BurgerBuilder extends Component<{},State> {
             <div>
                 <Modal show={this.state.ordering} onBackClick={this.checkoutCancelHandler}>
                     <OrderSummery 
+                    onCheckout={this.checkoutHandler}
                     onCheckoutCancel={this.checkoutCancelHandler}
                     ingredients={this.state.ingredients}
                     totalPrice={this.state.totalPrice}/>
@@ -38,6 +40,27 @@ class BurgerBuilder extends Component<{},State> {
                 </Center>
             </div>
         );
+    }
+
+    checkoutHandler = ()=>{
+        const data = {
+            ingredients: this.state.ingredients,
+            totalPrice: this.state.totalPrice,
+            deliveryMethod: "fastest",
+            customer:{
+                name: "Manick",
+                email: "manickware@gmail.com",
+                address: {
+                    country: "India",
+                    street: "22 H.M.M Road",
+                    pincode: 700137
+                }
+            }
+        }
+        axios.post("/orders.json",data)
+        .then(response=>{
+            console.log(response);
+        });
     }
 
     checkoutCancelHandler = ()=>this.setState({ordering: false});
