@@ -8,19 +8,29 @@ import Center from '../../components/center/center';
 import Modal from '../../components/modal/modal';
 import ingredientHub, { IngredientType } from '../../data/ingredient_hub';
 import axios from '../../axios_order';
+import withErrorHandler from '../../hoc/with_error_handler';
 
 interface State{
     ingredients: IngredientType[],
     totalPrice: number,
     ordering: boolean,
-    purchasing: boolean
+    purchasing: boolean,
+    loading: boolean
 }
 class BurgerBuilder extends Component<{},State> {
     state:State = {
         ingredients:[],
         totalPrice: 0,
         ordering: false,
-        purchasing: false
+        purchasing: false,
+        loading: false
+    }
+    componentDidMount(){
+        this.setState({loading: true})
+        axios.get("/ingredients.json")
+        .then(res=>{
+            this.setState({ingredients:res.data,loading: false});
+        }).catch(error=>{})
     }
     render() {
         return (
@@ -34,6 +44,7 @@ class BurgerBuilder extends Component<{},State> {
                     totalPrice={this.state.totalPrice}/>
                 </Modal>
                 <Burger
+                loading={this.state.loading}
                 onIngredientClick={this.ingredientRemoveHandler}
                 ingredients={this.state.ingredients}/>
                 <BurgerControls onAddIngredient={this.ingredientAddingHandler}/>
@@ -95,4 +106,4 @@ class BurgerBuilder extends Component<{},State> {
     }
 }
 
-export default BurgerBuilder;
+export default withErrorHandler(BurgerBuilder,axios);
