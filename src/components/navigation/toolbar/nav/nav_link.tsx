@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import {NavLink as RealNavLink} from 'react-router-dom';
 const Wrapper = styled.li`
     padding: 10px;
     a{
@@ -37,6 +38,6 @@ interface Props{
     selected? : boolean;
 }
 const NavLink:React.FunctionComponent<Props> = ({children,to,selected=false})=>(
-    <Wrapper><a href={to} className={selected ? "active":""}>{children}</a></Wrapper>
+    <Wrapper><RealNavLink to={to} exact>{children}</RealNavLink></Wrapper>
 );
 export default NavLink;
