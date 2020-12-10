@@ -9,6 +9,7 @@ import Modal from '../../components/modal/modal';
 import ingredientHub, { IngredientType } from '../../data/ingredient_hub';
 import axios from '../../axios_order';
 import withErrorHandler from '../../hoc/with_error_handler';
+import { RouteComponentProps } from 'react-router-dom';
 
 interface State{
     ingredients: IngredientType[],
@@ -17,7 +18,7 @@ interface State{
     purchasing: boolean,
     loading: boolean
 }
-class BurgerBuilder extends Component<{},State> {
+class BurgerBuilder extends Component<RouteComponentProps,State> {
     state:State = {
         ingredients:[],
         totalPrice: 0,
@@ -57,29 +58,30 @@ class BurgerBuilder extends Component<{},State> {
     }
 
     checkoutHandler = ()=>{
-        this.setState({purchasing: true});
-        const data = {
-            ingredients: this.state.ingredients,
-            totalPrice: this.state.totalPrice,
-            deliveryMethod: "fastest",
-            customer:{
-                name: "Manick",
-                email: "manickware@gmail.com",
-                address: {
-                    country: "India",
-                    street: "22 H.M.M Road",
-                    pincode: 700137
-                }
-            }
-        }
-        axios.post("/orders.json",data)
-        .then(response=>{
-            this.setState({purchasing: false,ordering:false});
-        })
-        .catch(error=>{
-            console.log(error);
-            this.setState({purchasing: false,ordering:false});
-        })
+        this.props.history.push("/checkout",this.state.ingredients);
+        // this.setState({purchasing: true});
+        // const data = {
+        //     ingredients: this.state.ingredients,
+        //     totalPrice: this.state.totalPrice,
+        //     deliveryMethod: "fastest",
+        //     customer:{
+        //         name: "Manick",
+        //         email: "manickware@gmail.com",
+        //         address: {
+        //             country: "India",
+        //             street: "22 H.M.M Road",
+        //             pincode: 700137
+        //         }
+        //     }
+        // }
+        // axios.post("/orders.json",data)
+        // .then(response=>{
+        //     this.setState({purchasing: false,ordering:false});
+        // })
+        // .catch(error=>{
+        //     console.log(error);
+        //     this.setState({purchasing: false,ordering:false});
+        // })
     }
 
     checkoutCancelHandler = ()=>this.setState({ordering: false});
