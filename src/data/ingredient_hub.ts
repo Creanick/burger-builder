@@ -16,4 +16,12 @@ const ingredientHub:IIngredientHub = {
     [IngredientType.bacon]:{label: "Bacon",price: 89.2,type:IngredientType.bacon}
 }
 
+export function calculateIngredientPrice(ingredients:IngredientType[]):number{
+    let price:number = 0;
+    ingredients.forEach(i=>{
+        price += ingredientHub[i].price
+    })
+    return price;
+}
+
 export default ingredientHub;
