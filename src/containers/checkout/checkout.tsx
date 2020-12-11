@@ -4,7 +4,7 @@ import Burger from '../../components/burger/burger';
 import Button from '../../components/button/button';
 import FlatButton from '../../components/button/flat_button';
 import Center from '../../components/center/center';
-import { IngredientType } from '../../data/ingredient_hub';
+import { calculateIngredientPrice, IngredientType } from '../../data/ingredient_hub';
 import UserForm from '../user_form/user_form';
 interface State{
     ingredients:IngredientType[]
@@ -17,6 +17,7 @@ class Checkout extends Component<RouteComponentProps,State>{
     render(){
         const buttons = (
             <Fragment>
+                
                 <Center>
                     <Button 
                     color="orange" 
@@ -33,6 +34,7 @@ class Checkout extends Component<RouteComponentProps,State>{
             <div>
                 <h1 style={{textAlign:"center"}}>We hope it tastes well</h1>
                 {this.state.ingredients.length !== 0 && <Burger ingredients={this.state.ingredients}/>}
+                <p style={{textAlign:"center"}}>Total Price: <b>{calculateIngredientPrice(this.state.ingredients)}</b></p>
                 {this.props.match.isExact && buttons}
                 <Route path={this.props.match.url + "/user-form"} 
                 render={props=>(<UserForm {...props} ingredients={this.state.ingredients}/>)}/>

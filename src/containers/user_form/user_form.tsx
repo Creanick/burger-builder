@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import styled from 'styled-components';
 import Button from '../../components/button/button';
 import Center from '../../components/center/center';
 import { calculateIngredientPrice, IngredientType } from '../../data/ingredient_hub';
 import axios from '../../axios_order';
 import { IOrder } from '../../components/order/order';
+import FormElement, { InputElement, SelectElement,Option } from './form_element';
+enum DeliveryMethod{
+    fastest = "fastest",
+    slowest = "slowest",
+    unpredictable = "unpredicatable",
+}
 interface State{
-    name:string,
-    email:string,
-    address:{
-        street:string,
-        postalCode:string
+    formElements:{
+        [id:string]:FormElement
     },
     loading: boolean
 }
@@ -19,28 +21,72 @@ interface Props extends RouteComponentProps{
     ingredients:IngredientType[]
 }
 class UserForm extends Component<Props,State>{
+    static allDeliverMethods = [DeliveryMethod.fastest,DeliveryMethod.slowest,
+    DeliveryMethod.unpredictable];
     state:State = {
-        name:"",
-        email:"",
-        address:{
-            street: "",
-            postalCode: ""
+        formElements:{
+            "name":new InputElement({
+                id:"name",
+                name:"name",
+                placeholder:"Your Name",
+                type:"text",
+                value:"",
+            },(value)=>{
+                return value.trim().length !== 0;
+            }),
+            "email":new InputElement({
+                id:"email",
+                name:"email",
+                placeholder:"Your Email",
+                type:"email",
+                value:""
+            },(email)=>{
+                function validateEmail(email:string):boolean {
+                    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                    return re.test(String(email).toLowerCase());
+                }
+                return validateEmail(email);
+            }),
+            "street":new InputElement({
+                id:"street",
+                name:"street",
+                placeholder:"Your Street Address",
+                type:"text",
+                value:""
+            },(value)=>{
+                return value.trim().length !== 0;
+            }),
+            "pincode":new InputElement({
+                id:"pincode",
+                name:"pincode",
+                placeholder:"Your Pincode",
+                type:"text",
+                value:""
+            },(value)=>{
+                return value.length === 6;
+            }),
+            "delivery":new SelectElement({
+                id:"delivery",
+                name:"delivery",
+                label:"Select Delivery Method: ",
+                value:DeliveryMethod.slowest,
+                options: UserForm.allDeliverMethods.map(method=>
+                    new Option(method,method))
+            })
         },
         loading: false
     }
     render(){
+        console.log(this.state.formElements);
+        const formElements = Object.values(this.state.formElements);
         return (
             <div style={{textAlign: "center"}}>
                 <h3>Fill Up the form</h3>
                 <form onSubmit={(event)=>event.preventDefault()}>
-                    <Input name="name" type="text" placeholder="Your Name"/>
-                    <Input name="email" type="email" placeholder="Your Email"/>
-                    <Input name="street" type="text" placeholder="Your Street"/>
-                    <Input name="postal" type="text" placeholder="Your Postal Code"/>
-                    <br/>
+                    {formElements.map(element=>(element.build(this.formElementChangeHandler)))}
                     <Center>
                         <Button 
-                        disabled={this.state.loading} color="green" onClick={this.orderHandler}>
+                        disabled={this.state.loading || !this.isFormValid} color="green" onClick={this.orderHandler}>
                             {this.state.loading ? "Placing Order...":"Place Order"}</Button>
                     </Center>
                 </form>
@@ -48,20 +94,43 @@ class UserForm extends Component<Props,State>{
             </div>
         );
     }
+    emptyValidator = (value:string):boolean=>{
+        return value.trim().length !== 0;
+    }
+    formElementChangeHandler =(value:string,id:string)=>{
+        this.setState(state=>{
+            const formElements = {...state.formElements};
+            formElements[id].value = value;
+            return {formElements:formElements};
+        });
+    }
+    get isFormValid():boolean{
+        const formElements = Object.values(this.state.formElements);
+        for (let fe = 0; fe < formElements.length; fe++) {
+            const element = formElements[fe];
+            if(!element.isValid){
+                return false;
+            }
+        }
+        return true;
+    }
     orderHandler = ()=>{
+        if(!this.isFormValid){
+            return;
+        }
         this.setState({loading:  true});
         const data:IOrder = {
             id:"",
             ingredients: this.props.ingredients,
             totalPrice: calculateIngredientPrice(this.props.ingredients),
-            deliveryMethod: "fastest",
+            deliveryMethod: this.state.formElements['delivery'].value,
             customer:{
-                name: "Manick",
-                email: "manickware@gmail.com",
+                name: this.state.formElements['name'].value,
+                email: this.state.formElements['email'].value,
                 address: {
                     country: "India",
-                    street: "22 H.M.M Road",
-                    pincode: 700137
+                    street: this.state.formElements['street'].value,
+                    pincode: Number.parseInt(this.state.formElements['pincode'].value)
                 }
             }
         }
@@ -77,12 +146,5 @@ class UserForm extends Component<Props,State>{
         })
     }
 }
-const Input = styled.input`
-    width: 60%;
-    display: block;
-    margin: auto;
-    padding: 10px 12px;
-    margin: 10px auto;
-`;
 
 export default UserForm;
