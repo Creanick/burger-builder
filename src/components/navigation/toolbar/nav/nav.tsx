@@ -17,7 +17,7 @@ const Nav:React.FunctionComponent = (props)=>(
     <nav style={{height:"100%"}}>
         <Wrapper>
             <NavLink to="/">Home</NavLink>
-            <NavLink to="/checkout">Checkout</NavLink>
+            <NavLink to="/orders">Orders</NavLink>
         </Wrapper>
     </nav>
 );

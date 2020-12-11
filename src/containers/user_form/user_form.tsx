@@ -5,6 +5,7 @@ import Button from '../../components/button/button';
 import Center from '../../components/center/center';
 import { calculateIngredientPrice, IngredientType } from '../../data/ingredient_hub';
 import axios from '../../axios_order';
+import { IOrder } from '../../components/order/order';
 interface State{
     name:string,
     email:string,
@@ -49,7 +50,8 @@ class UserForm extends Component<Props,State>{
     }
     orderHandler = ()=>{
         this.setState({loading:  true});
-        const data = {
+        const data:IOrder = {
+            id:"",
             ingredients: this.props.ingredients,
             totalPrice: calculateIngredientPrice(this.props.ingredients),
             deliveryMethod: "fastest",
