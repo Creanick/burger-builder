@@ -6,7 +6,7 @@ import BurgerControls from '../../components/burger_controls/burger_controls';
 import Button from '../../components/button/button';
 import Center from '../../components/center/center';
 import Modal from '../../components/modal/modal';
-import ingredientHub, { IngredientType } from '../../data/ingredient_hub';
+import ingredientHub, { calculateIngredientPrice, IngredientType } from '../../data/ingredient_hub';
 import axios from '../../axios_order';
 import withErrorHandler from '../../hoc/with_error_handler';
 import { RouteComponentProps } from 'react-router-dom';
@@ -28,9 +28,10 @@ class BurgerBuilder extends Component<RouteComponentProps,State> {
     }
     componentDidMount(){
         this.setState({loading: true})
-        axios.get("/ingredients.json")
+        axios.get<IngredientType[]>("/ingredients.json")
         .then(res=>{
-            this.setState({ingredients:res.data,loading: false});
+            const price = calculateIngredientPrice(res.data);
+            this.setState({ingredients:res.data,loading: false,totalPrice:price});
         }).catch(error=>{})
     }
     render() {
@@ -59,29 +60,6 @@ class BurgerBuilder extends Component<RouteComponentProps,State> {
 
     checkoutHandler = ()=>{
         this.props.history.push("/checkout",this.state.ingredients);
-        // this.setState({purchasing: true});
-        // const data = {
-        //     ingredients: this.state.ingredients,
-        //     totalPrice: this.state.totalPrice,
-        //     deliveryMethod: "fastest",
-        //     customer:{
-        //         name: "Manick",
-        //         email: "manickware@gmail.com",
-        //         address: {
-        //             country: "India",
-        //             street: "22 H.M.M Road",
-        //             pincode: 700137
-        //         }
-        //     }
-        // }
-        // axios.post("/orders.json",data)
-        // .then(response=>{
-        //     this.setState({purchasing: false,ordering:false});
-        // })
-        // .catch(error=>{
-        //     console.log(error);
-        //     this.setState({purchasing: false,ordering:false});
-        // })
     }
 
     checkoutCancelHandler = ()=>this.setState({ordering: false});

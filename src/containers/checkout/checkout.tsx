@@ -1,10 +1,11 @@
-import React, { Component } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import React, { Component, Fragment } from 'react';
+import { Route, RouteComponentProps } from 'react-router-dom';
 import Burger from '../../components/burger/burger';
 import Button from '../../components/button/button';
 import FlatButton from '../../components/button/flat_button';
 import Center from '../../components/center/center';
 import { IngredientType } from '../../data/ingredient_hub';
+import UserForm from '../user_form/user_form';
 interface State{
     ingredients:IngredientType[]
 }
@@ -14,17 +15,27 @@ class Checkout extends Component<RouteComponentProps,State>{
     }
 
     render(){
-        return (
-            <div>
-                <h1 style={{textAlign:"center"}}>We hope it tastes well</h1>
-                <Burger ingredients={this.state.ingredients}/>
+        const buttons = (
+            <Fragment>
                 <Center>
-                    <Button color="orange">Continue</Button>
+                    <Button 
+                    color="orange" 
+                    onClick={this.continueHandler}
+                    disabled={this.state.ingredients.length === 0}>Continue</Button>
                 </Center>
                 <br/>
                 <Center>
                     <FlatButton color="red" onClick={this.cancelHandler}>Cancel</FlatButton>
                 </Center>
+            </Fragment>
+        );
+        return (
+            <div>
+                <h1 style={{textAlign:"center"}}>We hope it tastes well</h1>
+                {this.state.ingredients.length !== 0 && <Burger ingredients={this.state.ingredients}/>}
+                {this.props.match.isExact && buttons}
+                <Route path={this.props.match.url + "/user-form"} 
+                render={props=>(<UserForm {...props} ingredients={this.state.ingredients}/>)}/>
             </div>
         );
     }
@@ -36,6 +47,10 @@ class Checkout extends Component<RouteComponentProps,State>{
                 ingredients: ingredients
             });
         }
+    }
+
+    continueHandler = ()=>{
+        this.props.history.push(this.props.match.url + "/user-form");
     }
 
     cancelHandler = ()=>{
