@@ -44,7 +44,7 @@ class Checkout extends Component<Props,State>{
                 <p style={{textAlign:"center"}}>Total Price: <b>{this.props.totalPrice}</b></p>
                 {this.props.match.isExact && buttons}
                 <Route path={this.props.match.url + "/user-form"} 
-                render={props=>(<UserForm {...props} ingredients={this.props.ingredients}/>)}/>
+                component={UserForm}/>
             </div>
         );
     }

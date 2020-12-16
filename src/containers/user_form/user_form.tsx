@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import Button from '../../components/button/button';
 import Center from '../../components/center/center';
-import { calculateIngredientPrice, IngredientType } from '../../data/ingredient_hub';
+import {calculateIngredientPrice, IngredientType } from '../../data/ingredient_hub';
 import axios from '../../axios_order';
 import { IOrder } from '../../components/order/order';
 import FormElement, { InputElement, SelectElement,Option } from './form_element';
+import { connect } from 'react-redux';
+import { StoreState } from '../../store/store';
 enum DeliveryMethod{
     fastest = "fastest",
     slowest = "slowest",
@@ -17,9 +19,11 @@ interface State{
     },
     loading: boolean
 }
-interface Props extends RouteComponentProps{
-    ingredients:IngredientType[]
+interface ValueProps{
+    ingredients:IngredientType[],
+    totalPrice: number,
 }
+interface Props extends RouteComponentProps,ValueProps{}
 class UserForm extends Component<Props,State>{
     static allDeliverMethods = [DeliveryMethod.fastest,DeliveryMethod.slowest,
     DeliveryMethod.unpredictable];
@@ -122,7 +126,7 @@ class UserForm extends Component<Props,State>{
         const data:IOrder = {
             id:"",
             ingredients: this.props.ingredients,
-            totalPrice: calculateIngredientPrice(this.props.ingredients),
+            totalPrice: this.props.totalPrice,
             deliveryMethod: this.state.formElements['delivery'].value,
             customer:{
                 name: this.state.formElements['name'].value,
@@ -146,5 +150,10 @@ class UserForm extends Component<Props,State>{
         })
     }
 }
-
-export default UserForm;
+const maStateToProps = (state:StoreState):ValueProps=>{
+    return {
+        ingredients: state.ingredientHub.ingredients,
+        totalPrice: calculateIngredientPrice(state.ingredientHub.ingredients)
+    };
+}
+export default connect(maStateToProps)(UserForm);
