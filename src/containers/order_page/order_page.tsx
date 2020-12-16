@@ -28,6 +28,9 @@ class OrderPage extends Component<RouteComponentProps,State>{
         })
     }
     render(){
+        if(this.state.orders.length === 0 && !this.state.loading){
+            return <div>No Order Available</div>
+        }
         return (
             <div>
                 {this.state.loading ? <h1>...Loading</h1>:this.state.orders.map(order=>(<Order key={order.id} order={order}/>))}
