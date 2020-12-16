@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { IngredientType } from '../../data/ingredient_hub';
-import Spinner from '../spinner/spinner';
 import Ingredient from './ingredient/ingredient';
 interface Props{
     ingredients: IngredientType[],
