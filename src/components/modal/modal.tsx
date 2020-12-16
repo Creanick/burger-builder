@@ -1,13 +1,14 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment, ReactNode } from 'react';
 import styled from 'styled-components';
 interface Props{
     show: boolean,
-    onBackClick?:()=>void
+    onBackClick?:()=>void,
+    children?:ReactNode
 }
 
 class Modal extends Component<Props>{
-    shouldComponentUpdate(nextProps:Props,){
-        return nextProps.show !== this.props.show;
+    shouldComponentUpdate(nextProps:Props){
+        return nextProps.show !== this.props.show || nextProps.children !== this.props.children;
     }
     render(){
         const {show=true,children,onBackClick} = this.props;

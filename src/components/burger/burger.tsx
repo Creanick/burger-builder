@@ -1,12 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import { IngredientType } from '../../data/ingredient_hub';
+import Spinner from '../spinner/spinner';
 import Ingredient from './ingredient/ingredient';
 interface Props{
     ingredients: IngredientType[],
-    onIngredientClick?: (index:number)=>void
+    onIngredientClick?: (index:number)=>void,
+    loading?:boolean
 }
-const Burger:React.FunctionComponent<Props> = ({ingredients,onIngredientClick})=>{
+const Burger:React.FunctionComponent<Props> = ({ingredients,loading=false,onIngredientClick})=>{
     const ingredientsElements = ingredients.map((type,index)=>{
         return <Ingredient
         onClick={()=>onIngredientClick && onIngredientClick(index)}
@@ -17,7 +19,7 @@ const Burger:React.FunctionComponent<Props> = ({ingredients,onIngredientClick})=
         <Container>
             <Ingredient type={IngredientType.breadTop}/>
             {ingredients.length === 0?<p>
-                Place Add Some Ingredients
+                {loading ? "Loading...":"Please add some ingredients"}
             </p>: ingredientsElements}
             <Ingredient type={IngredientType.breadBottom}/>
         </Container>
