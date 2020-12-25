@@ -1,42 +1,60 @@
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import Order, { IOrder } from '../../components/order/order';
-import axios from '../../axios_order';
-interface State{
+import Spinner from '../../components/spinner/spinner';
+import Center from '../../components/center/center';
+import { StoreState } from '../../store/store';
+import { ThunkDispatch } from 'redux-thunk';
+import { AnyAction } from 'redux';
+import { OrderHubEvent } from '../../store/order_hub/order_hub_event';
+import { connect } from 'react-redux';
+
+interface ValueProps{
     orders:IOrder[],
-    loading: boolean
+    orderFetching: boolean,
+    fetchingOrderFailed: boolean,
 }
-class OrderPage extends Component<RouteComponentProps,State>{
-    state:State = {
-        orders:[],
-        loading: false
-    }
+interface HandlerProps{
+    fetchOrder:()=>void
+}
+interface Props extends RouteComponentProps,ValueProps,Partial<HandlerProps>{}
+class OrderPage extends Component<Props>{
+
     componentDidMount(){
-        this.setState({loading: true});
-        axios.get<{[index:string]:IOrder}>("/orders.json")
-        .then(res=>{
-            this.setState({loading: false});
-            const orders:IOrder[] = [];
-            for(let id in res.data){
-                orders.push({...res.data[id],id:id});
-            }
-            this.setState({orders:orders});
-        })
-        .catch(err=>{
-            alert("Order fetching error");
-            this.setState({loading: false});
-        })
+        this.props.fetchOrder && this.props.fetchOrder();
     }
     render(){
-        if(this.state.orders.length === 0 && !this.state.loading){
+        if(this.props.fetchingOrderFailed){
+            return (
+                <Center>
+                    <h1>
+                        Something went wrong with orders
+                    </h1>
+                </Center>
+            );
+        }
+        if(this.props.orders.length === 0 && !this.props.orderFetching){
             return <div>No Order Available</div>
         }
         return (
             <div>
-                {this.state.loading ? <h1>...Loading</h1>:this.state.orders.map(order=>(<Order key={order.id} order={order}/>))}
+                {this.props.orderFetching ? <Center>
+                    <Spinner/>
+                </Center>:this.props.orders.map(order=>(<Order key={order.id} order={order}/>))}
             </div>
         );
     }
 }
-
-export default OrderPage;
+const mapStateToProps = (state:StoreState):ValueProps=>{
+    return {
+        orders: state.orderHub.orders,
+        fetchingOrderFailed: state.orderHub.error,
+        orderFetching: state.orderHub.loading,
+    }
+}
+const mapDispatchToProps = (dispatch:ThunkDispatch<StoreState,{},AnyAction>):HandlerProps=>{
+    return {
+        fetchOrder: ()=>dispatch(OrderHubEvent.fetch())
+    };
+}
+export default connect(mapStateToProps,mapDispatchToProps)(OrderPage);

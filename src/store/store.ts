@@ -5,13 +5,17 @@ import thunk from 'redux-thunk';
 import {composeWithDevTools} from 'redux-devtools-extension';
 import { OrderFormState } from "./order_form/order_form_state";
 import orderFormReducer from './order_form/order_form_reducer';
+import { OrderHubState } from "./order_hub/order_hub_state";
+import orderHubReducer from './order_hub/order_hub_reducer';
 export interface StoreState{
     ingredientHub:IngredientState,
     orderForm: OrderFormState,
+    orderHub: OrderHubState,
 }
 const rootReducer = combineReducers<StoreState>({
     ingredientHub: ingredientReducer,
-    orderForm: orderFormReducer
+    orderForm: orderFormReducer,
+    orderHub: orderHubReducer,
 })
 
 const middleware = composeWithDevTools(applyMiddleware(thunk));
