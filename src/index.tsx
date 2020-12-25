@@ -5,8 +5,6 @@ import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import {Provider} from 'react-redux';
 import store from './store/store';
-import { IngredientEvent } from './store/ingredient/ingredient_event';
-store.dispatch<any>(IngredientEvent.initIngredients());
 const app = (
   <Provider store={store}>
     <BrowserRouter>

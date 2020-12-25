@@ -37,9 +37,9 @@ class BurgerBuilder extends Component<Props,State> {
         ordering: false,
         purchasing: false,
     }
-    // componentDidMount(){
-    //     this.props.onInitIngredient && this.props.onInitIngredient();   
-    // }
+    componentDidMount(){
+        this.props.onInitIngredient && this.props.onInitIngredient();   
+    }
     render() {
         return (
             <div>
