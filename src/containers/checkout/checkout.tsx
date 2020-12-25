@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { Route, RouteComponentProps } from 'react-router-dom';
+import { Redirect, Route, RouteComponentProps } from 'react-router-dom';
 import Burger from '../../components/burger/burger';
 import Button from '../../components/button/button';
 import FlatButton from '../../components/button/flat_button';
@@ -22,6 +22,9 @@ class Checkout extends Component<Props,State>{
     // }
 
     render(){
+        if(this.props.ingredients.length === 0){
+            return <Redirect to="/"/>
+        }
         const buttons = (
             <Fragment>
                 
