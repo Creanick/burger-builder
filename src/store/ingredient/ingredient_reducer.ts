@@ -30,7 +30,7 @@ class IngredientReducer{
         }
     }
     static fetchingIngredientsSuccess(state:IngredientState,event:FetchingIngredientSuccessEvent):IngredientState{
-        const newIngredients = [...state.ingredients];
+        const newIngredients = [];
         if(Array.isArray(event.ingredients)){
             newIngredients.push(...event.ingredients);
         }else{
