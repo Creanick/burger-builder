@@ -7,28 +7,27 @@ import Button from '../../components/button/button';
 import Center from '../../components/center/center';
 import Modal from '../../components/modal/modal';
 import {calculateIngredientPrice, IngredientType } from '../../data/ingredient_hub';
-import axios from '../../axios_order';
-import withErrorHandler from '../../hoc/with_error_handler';
 import { RouteComponentProps } from 'react-router-dom';
 import { StoreState } from '../../store/store';
-import {Dispatch } from 'redux';
-import { IngredientEvent, IngredientEventType } from '../../store/ingredient/ingredient_event';
+import { IngredientEvent } from '../../store/ingredient/ingredient_event';
 import { connect } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
+import Spinner from '../../components/spinner/spinner';
 
 interface State{
-    // ingredients: IngredientType[],
-    // totalPrice: number,
     ordering: boolean,
     purchasing: boolean,
-    loading: boolean
 }
 interface ValueProps{
     ingredients:IngredientType[],
     totalPrice:number,
+    ingredientsLoading:boolean,
+    ingredientsError:boolean,
 }
 interface HandlerProps{
     onAddIngredient:(ingredient:IngredientType)=>void,
-    onRemoveIngredient:(index:number)=>void
+    onRemoveIngredient:(index:number)=>void,
+    onInitIngredient:()=>void
 }
 interface Props extends RouteComponentProps,ValueProps,Partial<HandlerProps>{}
 class BurgerBuilder extends Component<Props,State> {
@@ -37,15 +36,9 @@ class BurgerBuilder extends Component<Props,State> {
         // totalPrice: 0,
         ordering: false,
         purchasing: false,
-        loading: false
     }
     componentDidMount(){
-        // this.setState({loading: true})
-        // axios.get<IngredientType[]>("/ingredients.json")
-        // .then(res=>{
-        //     const price = calculateIngredientPrice(res.data);
-        //     this.setState({ingredients:res.data,loading: false,totalPrice:price});
-        // }).catch(error=>{})
+        this.props.onInitIngredient && this.props.onInitIngredient();   
     }
     render() {
         return (
@@ -58,10 +51,10 @@ class BurgerBuilder extends Component<Props,State> {
                     ingredients={this.props.ingredients}
                     totalPrice={this.props.totalPrice}/>
                 </Modal>
-                <Burger
-                loading={this.state.loading}
-                onIngredientClick={this.props.onRemoveIngredient}
-                ingredients={this.props.ingredients}/>
+                {
+                    this.props.ingredientsError ? this.buildBurgerLoadedError()
+                    :(this.props.ingredientsLoading ? this.buildBurgerLoading() : this.buildBurgerLoaded(this.props.ingredients,this.props.ingredientsLoading))
+                }
                 <BurgerControls onAddIngredient={this.props.onAddIngredient}/>
                 <PriceViewer price={this.props.totalPrice}/>
                 <Center>
@@ -69,6 +62,29 @@ class BurgerBuilder extends Component<Props,State> {
                 </Center>
             </div>
         );
+    }
+
+    buildBurgerLoading = ()=>{
+        return (
+            <div>
+                <br/>
+                <Center>
+                    <Spinner/>
+                </Center>
+                <br/>
+            </div>
+        );
+    }
+    buildBurgerLoaded = (ingredients:IngredientType[],loading:boolean)=>{
+        return <Burger
+        loading={loading}
+        onIngredientClick={this.props.onRemoveIngredient}
+        ingredients={ingredients}/>
+    }
+    buildBurgerLoadedError = ()=>{
+       return  <Center>
+            <h3>Soemthing went wrong with burger</h3>
+        </Center>
     }
 
     checkoutHandler = ()=>{
@@ -103,13 +119,16 @@ class BurgerBuilder extends Component<Props,State> {
 const mapStateToProps = (state:StoreState):ValueProps=>{
     return {
         ingredients: state.ingredientHub.ingredients,
-        totalPrice: calculateIngredientPrice(state.ingredientHub.ingredients)
+        totalPrice: calculateIngredientPrice(state.ingredientHub.ingredients),
+        ingredientsError: state.ingredientHub.error,
+        ingredientsLoading: state.ingredientHub.loading,
     };
 }
-const mapDispatchToProps = (dispatch:Dispatch<IngredientEventType>):HandlerProps=>{
+const mapDispatchToProps = (dispatch:ThunkDispatch<{},{},any>):HandlerProps=>{
     return {
         onAddIngredient:(ingredient:IngredientType)=>dispatch(IngredientEvent.addIngredient(ingredient)),
-        onRemoveIngredient:(index:number)=>dispatch(IngredientEvent.removeIngredient(index))
+        onRemoveIngredient:(index:number)=>dispatch(IngredientEvent.removeIngredient(index)),
+        onInitIngredient: ()=>dispatch(IngredientEvent.initIngredients())
     };
 }
-export default connect(mapStateToProps,mapDispatchToProps)(withErrorHandler(BurgerBuilder,axios));
+export default connect(mapStateToProps,mapDispatchToProps)((BurgerBuilder));

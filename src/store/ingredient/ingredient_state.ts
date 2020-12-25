@@ -1,5 +1,7 @@
 import { IngredientType } from "../../data/ingredient_hub";
 
 export interface IngredientState{
-    ingredients:IngredientType[]
+    ingredients:IngredientType[],
+    loading: boolean,
+    error: boolean,
 }

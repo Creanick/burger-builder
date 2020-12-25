@@ -41,7 +41,7 @@ const Wrapper = styled.div`
 &:before {
   width: 50%;
   height: 50%;
-  background: #ffffff;
+  background: #e02020;
   border-radius: 100% 0 0 0;
   position: absolute;
   top: 0;
@@ -49,7 +49,7 @@ const Wrapper = styled.div`
   content: '';
 }
 &:after {
-  background: #0dc5c1;
+  background: #ffffff;
   width: 75%;
   height: 75%;
   border-radius: 50%;
