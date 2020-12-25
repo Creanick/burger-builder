@@ -13,6 +13,7 @@ import { IngredientEvent } from '../../store/ingredient/ingredient_event';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import Spinner from '../../components/spinner/spinner';
+import { OrderFormEvent } from '../../store/order_form/order_form_event';
 
 interface State{
     ordering: boolean,
@@ -27,7 +28,8 @@ interface ValueProps{
 interface HandlerProps{
     onAddIngredient:(ingredient:IngredientType)=>void,
     onRemoveIngredient:(index:number)=>void,
-    onInitIngredient:()=>void
+    onInitIngredient:()=>void,
+    onInitOrder:()=>void,
 }
 interface Props extends RouteComponentProps,ValueProps,Partial<HandlerProps>{}
 class BurgerBuilder extends Component<Props,State> {
@@ -38,7 +40,8 @@ class BurgerBuilder extends Component<Props,State> {
         purchasing: false,
     }
     componentDidMount(){
-        this.props.onInitIngredient && this.props.onInitIngredient();   
+        this.props.onInitIngredient && this.props.onInitIngredient();
+        this.props.onInitOrder && this.props.onInitOrder();
     }
     render() {
         return (
@@ -82,9 +85,9 @@ class BurgerBuilder extends Component<Props,State> {
         ingredients={ingredients}/>
     }
     buildBurgerLoadedError = ()=>{
-       return  <Center>
-            <h3>Soemthing went wrong with burger</h3>
-        </Center>
+    return  <Center>
+        <h3>Soemthing went wrong with burger</h3>
+    </Center>
     }
 
     checkoutHandler = ()=>{
@@ -128,7 +131,8 @@ const mapDispatchToProps = (dispatch:ThunkDispatch<{},{},any>):HandlerProps=>{
     return {
         onAddIngredient:(ingredient:IngredientType)=>dispatch(IngredientEvent.addIngredient(ingredient)),
         onRemoveIngredient:(index:number)=>dispatch(IngredientEvent.removeIngredient(index)),
-        onInitIngredient: ()=>dispatch(IngredientEvent.initIngredients())
+        onInitIngredient: ()=>dispatch(IngredientEvent.initIngredients()),
+        onInitOrder:()=>dispatch(OrderFormEvent.init())
     };
 }
 export default connect(mapStateToProps,mapDispatchToProps)((BurgerBuilder));

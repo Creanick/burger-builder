@@ -17,7 +17,7 @@ const ingredientHub:IIngredientHub = {
 }
 
 export function calculateIngredientPrice(ingredients:IngredientType[]):number{
-    let price:number = 0;
+    let price:number = 4;
     ingredients.forEach(i=>{
         price += ingredientHub[i].price
     })

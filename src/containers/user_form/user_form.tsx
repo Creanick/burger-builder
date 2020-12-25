@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { Redirect, RouteComponentProps } from 'react-router-dom';
 import Button from '../../components/button/button';
 import Center from '../../components/center/center';
 import {calculateIngredientPrice, IngredientType } from '../../data/ingredient_hub';
-import axios from '../../axios_order';
 import { IOrder } from '../../components/order/order';
 import FormElement, { InputElement, SelectElement,Option } from './form_element';
 import { connect } from 'react-redux';
 import { StoreState } from '../../store/store';
+import { ThunkDispatch } from 'redux-thunk';
+import { AnyAction } from 'redux';
+import { OrderFormEvent } from '../../store/order_form/order_form_event';
 enum DeliveryMethod{
     fastest = "fastest",
     slowest = "slowest",
@@ -17,13 +19,19 @@ interface State{
     formElements:{
         [id:string]:FormElement
     },
-    loading: boolean
+    // loading: boolean
 }
 interface ValueProps{
     ingredients:IngredientType[],
     totalPrice: number,
+    placingOrder:boolean,
+    orderFailed:boolean,
+    orderSucceed: boolean,
 }
-interface Props extends RouteComponentProps,ValueProps{}
+interface HandlerProps{
+    onOrder:(data:IOrder)=>void;
+}
+interface Props extends RouteComponentProps,ValueProps,Partial<HandlerProps>{}
 class UserForm extends Component<Props,State>{
     static allDeliverMethods = [DeliveryMethod.fastest,DeliveryMethod.slowest,
     DeliveryMethod.unpredictable];
@@ -78,10 +86,12 @@ class UserForm extends Component<Props,State>{
                     new Option(method,method))
             })
         },
-        loading: false
+        // loading: false
     }
     render(){
-        console.log(this.state.formElements);
+        if(this.props.orderSucceed){
+            return <Redirect to="/"/>
+        }
         const formElements = Object.values(this.state.formElements);
         return (
             <div style={{textAlign: "center"}}>
@@ -90,8 +100,8 @@ class UserForm extends Component<Props,State>{
                     {formElements.map(element=>(element.build(this.formElementChangeHandler)))}
                     <Center>
                         <Button 
-                        disabled={this.state.loading || !this.isFormValid} color="green" onClick={this.orderHandler}>
-                            {this.state.loading ? "Placing Order...":"Place Order"}</Button>
+                        disabled={this.props.placingOrder || !this.isFormValid} color="green" onClick={this.orderHandler}>
+                            {this.props.placingOrder ? "Placing Order...":"Place Order"}</Button>
                     </Center>
                 </form>
                 <br/>
@@ -122,7 +132,6 @@ class UserForm extends Component<Props,State>{
         if(!this.isFormValid){
             return;
         }
-        this.setState({loading:  true});
         const data:IOrder = {
             id:"",
             ingredients: this.props.ingredients,
@@ -138,22 +147,21 @@ class UserForm extends Component<Props,State>{
                 }
             }
         }
-        axios.post("/orders.json",data)
-        .then(response=>{
-            this.setState({loading:  false});
-            this.props.history.replace("/");
-        })
-        .catch(error=>{
-            console.log(error);
-            alert("Placing Order failed");
-            this.setState({loading:  false});
-        })
+        this.props.onOrder && this.props.onOrder(data);
     }
 }
 const maStateToProps = (state:StoreState):ValueProps=>{
     return {
         ingredients: state.ingredientHub.ingredients,
-        totalPrice: calculateIngredientPrice(state.ingredientHub.ingredients)
+        totalPrice: calculateIngredientPrice(state.ingredientHub.ingredients),
+        orderFailed: state.orderForm.error,
+        orderSucceed: state.orderForm.ordered,
+        placingOrder: state.orderForm.loading,
     };
 }
-export default connect(maStateToProps)(UserForm);
+const mapDispatchToProps = (dispatch:ThunkDispatch<{},{},AnyAction>):HandlerProps=>{
+    return {
+        onOrder:(data:IOrder)=>dispatch(OrderFormEvent.order(data))
+    };
+}
+export default connect(maStateToProps,mapDispatchToProps)(UserForm);
