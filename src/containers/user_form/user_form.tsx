@@ -27,9 +27,10 @@ interface ValueProps{
     placingOrder:boolean,
     orderFailed:boolean,
     orderSucceed: boolean,
+    authToken?:string
 }
 interface HandlerProps{
-    onOrder:(data:IOrder)=>void;
+    onOrder:(data:IOrder,authToken:string)=>void;
 }
 interface Props extends RouteComponentProps,ValueProps,Partial<HandlerProps>{}
 class UserForm extends Component<Props,State>{
@@ -147,7 +148,11 @@ class UserForm extends Component<Props,State>{
                 }
             }
         }
-        this.props.onOrder && this.props.onOrder(data);
+        if(!this.props.authToken){
+            this.props.history.push("/login");
+        }else{
+            this.props.onOrder && this.props.onOrder(data,this.props.authToken);
+        }
     }
 }
 const maStateToProps = (state:StoreState):ValueProps=>{
@@ -157,11 +162,12 @@ const maStateToProps = (state:StoreState):ValueProps=>{
         orderFailed: state.orderForm.error,
         orderSucceed: state.orderForm.ordered,
         placingOrder: state.orderForm.loading,
+        authToken: state.auth.token
     };
 }
 const mapDispatchToProps = (dispatch:ThunkDispatch<{},{},AnyAction>):HandlerProps=>{
     return {
-        onOrder:(data:IOrder)=>dispatch(OrderFormEvent.order(data))
+        onOrder:(data:IOrder,authToken:string)=>dispatch(OrderFormEvent.order(data,authToken))
     };
 }
 export default connect(maStateToProps,mapDispatchToProps)(UserForm);

@@ -13,15 +13,20 @@ interface ValueProps{
     orders:IOrder[],
     orderFetching: boolean,
     fetchingOrderFailed: boolean,
+    authToken?:string
 }
 interface HandlerProps{
-    fetchOrder:()=>void
+    fetchOrder:(authToken:string)=>void
 }
 interface Props extends RouteComponentProps,ValueProps,Partial<HandlerProps>{}
 class OrderPage extends Component<Props>{
 
     componentDidMount(){
-        this.props.fetchOrder && this.props.fetchOrder();
+        if(!this.props.authToken){
+            this.props.history.replace("/login");
+        }else{
+            this.props.fetchOrder && this.props.fetchOrder(this.props.authToken);
+        }
     }
     render(){
         if(this.props.fetchingOrderFailed){
@@ -50,11 +55,12 @@ const mapStateToProps = (state:StoreState):ValueProps=>{
         orders: state.orderHub.orders,
         fetchingOrderFailed: state.orderHub.error,
         orderFetching: state.orderHub.loading,
+        authToken: state.auth.token,
     }
 }
 const mapDispatchToProps = (dispatch:ThunkDispatch<StoreState,{},AnyAction>):HandlerProps=>{
     return {
-        fetchOrder: ()=>dispatch(OrderHubEvent.fetch())
+        fetchOrder: (authToken)=>dispatch(OrderHubEvent.fetch(authToken))
     };
 }
 export default connect(mapStateToProps,mapDispatchToProps)(OrderPage);

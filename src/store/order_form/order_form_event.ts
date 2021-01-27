@@ -43,10 +43,10 @@ export class OrderFormEvent{
             type: ORDER_INIT
         };
     }
-    static order(data:IOrder):ThunkAction<Promise<void>,{},{},any>{
+    static order(data:IOrder,authToken:string):ThunkAction<Promise<void>,{},{},any>{
         return async(dispatch:Dispatch<OrderFormEventType>)=>{
             dispatch(OrderFormEvent.request());
-            axios.post("/orders.json",data)
+            axios.post("/orders.json?auth="+authToken,data)
                 .then(response=>{
                     dispatch(OrderFormEvent.success());
             })
