@@ -27,7 +27,8 @@ interface ValueProps{
     placingOrder:boolean,
     orderFailed:boolean,
     orderSucceed: boolean,
-    authToken?:string
+    authToken?:string,
+    userId?:string,
 }
 interface HandlerProps{
     onOrder:(data:IOrder,authToken:string)=>void;
@@ -133,24 +134,25 @@ class UserForm extends Component<Props,State>{
         if(!this.isFormValid){
             return;
         }
-        const data:IOrder = {
-            id:"",
-            ingredients: this.props.ingredients,
-            totalPrice: this.props.totalPrice,
-            deliveryMethod: this.state.formElements['delivery'].value,
-            customer:{
-                name: this.state.formElements['name'].value,
-                email: this.state.formElements['email'].value,
-                address: {
-                    country: "India",
-                    street: this.state.formElements['street'].value,
-                    pincode: Number.parseInt(this.state.formElements['pincode'].value)
-                }
-            }
-        }
-        if(!this.props.authToken){
+        if(!this.props.authToken || !this.props.userId){
             this.props.history.push("/login");
         }else{
+            const data:IOrder = {
+                id:"",
+                userId: this.props.userId,
+                ingredients: this.props.ingredients,
+                totalPrice: this.props.totalPrice,
+                deliveryMethod: this.state.formElements['delivery'].value,
+                customer:{
+                    name: this.state.formElements['name'].value,
+                    email: this.state.formElements['email'].value,
+                    address: {
+                        country: "India",
+                        street: this.state.formElements['street'].value,
+                        pincode: Number.parseInt(this.state.formElements['pincode'].value)
+                    }
+                }
+            }
             this.props.onOrder && this.props.onOrder(data,this.props.authToken);
         }
     }
@@ -162,7 +164,8 @@ const maStateToProps = (state:StoreState):ValueProps=>{
         orderFailed: state.orderForm.error,
         orderSucceed: state.orderForm.ordered,
         placingOrder: state.orderForm.loading,
-        authToken: state.auth.token
+        authToken: state.auth.token,
+        userId: state.auth.userId
     };
 }
 const mapDispatchToProps = (dispatch:ThunkDispatch<{},{},AnyAction>):HandlerProps=>{

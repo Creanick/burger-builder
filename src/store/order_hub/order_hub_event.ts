@@ -36,10 +36,11 @@ export class OrderHubEvent{
             type: FETCH_ORDER_FAILED
         }
     }
-    static fetch(authToken:string):ThunkAction<Promise<void>,{},{},any>{
+    static fetch(authToken:string,userId:string):ThunkAction<Promise<void>,{},{},any>{
         return async (dispatch:Dispatch<OrderHubEventType>)=>{
             dispatch(OrderHubEvent.request());
-            axios.get<{[index:string]:IOrder}>("/orders.json?auth="+authToken)
+            const queryParams = `?auth=${authToken}&orderBy="userId"&equalTo="${userId}"`;
+            axios.get<{[index:string]:IOrder}>("/orders.json"+queryParams)
                 .then(res=>{
                     const orders:IOrder[] = [];
                     for(let id in res.data){

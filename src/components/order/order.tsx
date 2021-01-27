@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { IngredientType } from '../../data/ingredient_hub';
 export interface IOrder{
     id:string,
+    userId:string,
     ingredients: IngredientType[],
     totalPrice: number,
     deliveryMethod: string,
