@@ -18,6 +18,7 @@ const Nav:React.FunctionComponent = (props)=>(
         <Wrapper>
             <NavLink to="/">Home</NavLink>
             <NavLink to="/orders">Orders</NavLink>
+            <NavLink to="/login">Login</NavLink>
         </Wrapper>
     </nav>
 );

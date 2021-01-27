@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Layout from './components/layout/layout';
+import AuthPage from './containers/auth/auth';
 import BurgerBuilder from './containers/burger_builder/burger_builder';
 import Checkout from './containers/checkout/checkout';
 import OrderPage from './containers/order_page/order_page';
@@ -12,6 +13,7 @@ function App() {
         <Switch>
           <Route path="/checkout" component={Checkout}/>
           <Route path="/orders" component={OrderPage}/>
+          <Route path="/login" component={AuthPage}/>
           <Route path="/" exact component={BurgerBuilder}/>
         </Switch>
       </Layout>
