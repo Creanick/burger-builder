@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Route, Switch } from 'react-router-dom';
+import {Route, Switch } from 'react-router-dom';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import Layout from './components/layout/layout';
@@ -14,20 +14,28 @@ import { StoreState } from './store/store';
 interface HandlerProps{
   tryAutoLogin:()=>void
 }
-interface Props extends Partial<HandlerProps>{}
+interface ValueProps{
+  isAuthenticated:boolean
+}
+interface Props extends Partial<HandlerProps>,ValueProps{}
 class App extends Component<Props>{
   componentDidMount(){
     this.props.tryAutoLogin && this.props.tryAutoLogin();
   }
   render(){
+    const authenticatedRoutes = (
+      <Switch>
+        <Route path="/checkout" component={Checkout}/>
+        <Route path="/orders" component={OrderPage}/>
+        <Route path="/logout" component={Logout}/>
+      </Switch>
+    );
     return (
       <div>
         <Layout>
+            {this.props.isAuthenticated && authenticatedRoutes}
           <Switch>
-            <Route path="/checkout" component={Checkout}/>
-            <Route path="/orders" component={OrderPage}/>
             <Route path="/login" component={AuthPage}/>
-            <Route path="/logout" component={Logout}/>
             <Route path="/" exact component={BurgerBuilder}/>
           </Switch>
         </Layout>
@@ -35,9 +43,14 @@ class App extends Component<Props>{
     );
   }
 }
+const mapStateToProps = (state:StoreState):ValueProps=>{
+  return{
+    isAuthenticated:!!state.auth.token
+  }
+}
 const mapDispatchToProps = (dispatch:ThunkDispatch<StoreState,{},AnyAction>):HandlerProps=>{
   return {
     tryAutoLogin:()=>dispatch(AuthEvent.tryAutoLogIn())
   }
 }
-export default connect(null,mapDispatchToProps)(App);
+export default connect(mapStateToProps,mapDispatchToProps)(App);
