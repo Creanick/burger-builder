@@ -4,6 +4,7 @@ import Layout from './components/layout/layout';
 import AuthPage from './containers/auth/auth';
 import BurgerBuilder from './containers/burger_builder/burger_builder';
 import Checkout from './containers/checkout/checkout';
+import Logout from './containers/logout/logout';
 import OrderPage from './containers/order_page/order_page';
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
           <Route path="/checkout" component={Checkout}/>
           <Route path="/orders" component={OrderPage}/>
           <Route path="/login" component={AuthPage}/>
+          <Route path="/logout" component={Logout}/>
           <Route path="/" exact component={BurgerBuilder}/>
         </Switch>
       </Layout>
