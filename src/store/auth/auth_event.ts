@@ -27,7 +27,26 @@ export interface IAuthLogoutEvent{
 }
 
 export type AuthEventType = IAuthStartEvent | IAuthSuccessEvent | IAuthFailedEvent | IAuthLogoutEvent;
-
+function onLogin(data:IAuthData,expiresIn:number,dispatch:Dispatch<AuthEventType>){
+    localStorage.setItem("token",data.token);
+    localStorage.setItem("userId",data.userId);
+    const expirationDate = new Date(new Date().getTime()+expiresIn * 1000);
+    localStorage.setItem("expirationDate",expirationDate.toISOString());
+    setAutoLogout(expirationDate,dispatch);
+}
+function onLogOut(){
+    localStorage.clear();
+}
+function setAutoLogout(expirationDate:Date,dispatch:Dispatch<AuthEventType>){
+    if(expirationDate <= new Date()){
+        dispatch(AuthEvent.logOut());
+    }else{
+        const expirationTime = expirationDate.getTime() - new Date().getTime();
+                setTimeout(()=>{
+                    dispatch(AuthEvent.logOut());
+                },expirationTime)
+    }
+}
 export class AuthEvent{
     private static start():IAuthStartEvent{
         return {
@@ -46,8 +65,26 @@ export class AuthEvent{
             data
         }
     }
-
+    static tryAutoLogIn():ThunkAction<Promise<void>,{},{},any>{
+        return async (dispatch:Dispatch<AuthEventType>)=>{
+            const token = localStorage.getItem("token");
+            const userId = localStorage.getItem("userId");
+            if(!token || !userId){
+                dispatch(AuthEvent.logOut());
+                
+            }else{
+                dispatch(AuthEvent.success({
+                    token:token,
+                    userId: userId,
+                }));
+                //set auto log out
+                const expirationDate = new Date(localStorage.getItem("expirationDate") as string);
+                setAutoLogout(expirationDate,dispatch);
+            }
+            }
+    }
     static logOut():IAuthLogoutEvent{
+        onLogOut();
         return {
             type: AUTH_LOGOUT
         }
@@ -65,11 +102,13 @@ export class AuthEvent{
             dispatch(AuthEvent.start());
             axios.post(url,{...data,returnSecureToken:true})
             .then(res=>{
-                const payload:{idToken:string,localId:string} = res.data;
-                dispatch(AuthEvent.success({
+                const payload:{idToken:string,localId:string,expiresIn:string} = res.data;
+                const authData = {
                     token: payload.idToken,
-                    userId: payload.localId
-                }));
+                    userId: payload.localId,
+                }
+                onLogin(authData,Number.parseInt(payload.expiresIn),dispatch);
+                dispatch(AuthEvent.success(authData));
             })
             .catch(error=>{
                 console.log(error);
