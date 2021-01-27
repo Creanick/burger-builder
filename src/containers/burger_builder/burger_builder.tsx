@@ -24,6 +24,7 @@ interface ValueProps{
     totalPrice:number,
     ingredientsLoading:boolean,
     ingredientsError:boolean,
+    isAuthenticated:boolean,
 }
 interface HandlerProps{
     onAddIngredient:(ingredient:IngredientType)=>void,
@@ -61,7 +62,11 @@ class BurgerBuilder extends Component<Props,State> {
                 <BurgerControls onAddIngredient={this.props.onAddIngredient}/>
                 <PriceViewer price={this.props.totalPrice}/>
                 <Center>
-                    <Button onClick={this.orderingHandler} color="orange" disabled={this.props.ingredients.length <= 0}>Order Now</Button>
+                    {
+                        this.props.isAuthenticated ? 
+                        <Button onClick={this.orderingHandler} color="orange" disabled={this.props.ingredients.length <= 0}>Order Now</Button>
+                        :<Button color="skyblue" onClick={this.signUpHandler}>Sign Up To Order</Button>
+                    }
                 </Center>
             </div>
         );
@@ -97,25 +102,11 @@ class BurgerBuilder extends Component<Props,State> {
     checkoutCancelHandler = ()=>this.setState({ordering: false});
 
     orderingHandler = ()=>this.setState({ordering: true});
-    // ingredientAddingHandler = (type:IngredientType)=>{
-    //     this.setState((state)=>{
-    //         const price = ingredientHub[type].price;
-    //         const totalPrice = state.totalPrice + price;
-    //         return {ingredients:[...state.ingredients,type],
-    //             totalPrice: totalPrice};
-    //     });
-    // }
-    // ingredientRemoveHandler = (index:number)=>{
-    //     if(index >= 0 && index < this.state.ingredients.length){
-    //         this.setState(state=>{
-    //             const ingredients = [...state.ingredients]; 
-    //             const type = ingredients.splice(index,1);
-    //             const price = ingredientHub[type[0]].price;
-    //         const totalPrice = state.totalPrice - price;
-    //             return {ingredients: ingredients,totalPrice:totalPrice};
-    //         })
-    //     }
-    // }
+    signUpHandler = ()=>{
+        this.props.history.push("/login",{
+            redirectTo:"/checkout"
+        });
+    }
 }
 
 
@@ -125,6 +116,7 @@ const mapStateToProps = (state:StoreState):ValueProps=>{
         totalPrice: calculateIngredientPrice(state.ingredientHub.ingredients),
         ingredientsError: state.ingredientHub.error,
         ingredientsLoading: state.ingredientHub.loading,
+        isAuthenticated: !!state.auth.token
     };
 }
 const mapDispatchToProps = (dispatch:ThunkDispatch<{},{},any>):HandlerProps=>{

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { RouteComponentProps } from 'react-router-dom';
+import { Redirect, RouteComponentProps } from 'react-router-dom';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import styled from 'styled-components';
@@ -17,6 +17,7 @@ interface State{
     // loading: boolean
 }
 interface ValueProps{
+    isAuthenticated:boolean,
     isAuthenticating:boolean,
     authFailedMessage?:string,
 }
@@ -69,6 +70,16 @@ class AuthPage extends React.Component<Props,State>{
     }
     render(){
         const formElements = Object.values(this.state.formElements);
+        if(this.props.isAuthenticated){
+            let redirectTo = "/";
+            if(this.props.location.state != null){
+                const routeState = this.props.location.state as {redirectTo?:string};
+                if(routeState?.redirectTo){
+                    redirectTo = routeState.redirectTo;
+                }
+            }
+            return <Redirect to={redirectTo}/>
+        }
         return (
             <Center>
                 <Wrapper style={{textAlign: "center"}}>
@@ -123,6 +134,7 @@ const Wrapper = styled.div`
 `;
 const mapStateToProps = (state:StoreState):ValueProps=>{
     return {
+        isAuthenticated: !!state.auth.token,
         isAuthenticating: state.auth.loading,
         authFailedMessage: state.auth.errorMessage
     }
