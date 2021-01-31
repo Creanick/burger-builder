@@ -64,7 +64,7 @@ class BurgerBuilder extends Component<Props,State> {
                 <Center>
                     {
                         this.props.isAuthenticated ? 
-                        <Button onClick={this.orderingHandler} color="orange" disabled={this.props.ingredients.length <= 0}>Order Now</Button>
+                        <Button onClick={this.orderingHandler} color="orange" disabled={this.props.ingredients.length <= 0}>Place Order</Button>
                         :<Button color="skyblue" onClick={this.signUpHandler}>Sign Up To Order</Button>
                     }
                 </Center>
